@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class Libro:
     def __init__(self, titulo, autor, isbn):
         self.titulo = titulo
@@ -15,7 +17,7 @@ class Prestamo:
     def __init__(self, libro, usuario, fecha_prestamo):
         self.libro = libro
         self.usuario = usuario
-        self.fecha_prestamo = fecha_prestamo
+        self.fecha_prestamo = datetime.strptime(fecha_prestamo, '%d-%m-%Y').date()
         self.fecha_devolucion = None
 
 class Catalogo:
@@ -109,6 +111,12 @@ while True:
             usuario = catalogo.buscar_usuario(id_usuario)
             if usuario:
                 fecha_prestamo = input("Ingrese la fecha de préstamo: ")
+                try:
+                    datetime.strptime(fecha_prestamo, '%d-%m-%Y')  # Validar formato de fecha
+                except ValueError:
+                    print("Formato de fecha incorrecto. Use dd-mm-aaaa.")
+                    continue
+                prestamo = catalogo.prestar_libro(libro, usuario, fecha_prestamo)
                 prestamo = catalogo.prestar_libro(libro, usuario, fecha_prestamo)
                 if prestamo:
                     print("Libro prestado.")
